@@ -78,12 +78,16 @@
       if (isRunning) {
         await html5QrCode.stop();
       }
-      await html5QrCode.start(
-        { facingMode: cameraFacing },
-        { fps: 10, qrbox: 250 },
-        onScanSuccess
-      );
-      isRunning = true;
+      try {
+        await html5QrCode.start(
+          { facingMode: cameraFacing },
+          { fps: 10, qrbox: 250 },
+          onScanSuccess
+        );
+        isRunning = true;
+      } catch (err) {
+        console.error("Camera start error: ", err);
+      }
     }
 
     async function switchCamera() {
@@ -96,4 +100,5 @@
   </script>
 </body>
 </html>
+
 
