@@ -79,7 +79,7 @@
         await html5QrCode.stop();
       }
       await html5QrCode.start(
-        { facingMode: { exact: cameraFacing } },
+        { facingMode: cameraFacing },
         { fps: 10, qrbox: 250 },
         onScanSuccess
       );
@@ -96,3 +96,4 @@
   </script>
 </body>
 </html>
+
