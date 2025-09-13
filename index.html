@@ -6,14 +6,8 @@
   <title>QR Code Scanner</title>
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
-      font-family: "Poppins", Arial, Helvetica, sans-serif;
+      font-family: "Poppins", Arial, sans-serif;
       background: linear-gradient(135deg, #FFCAD4, #9D8189);
       min-height: 100vh;
       display: flex;
@@ -26,17 +20,14 @@
 
     h2 {
       margin-bottom: 15px;
-      font-size: 28px;
-      font-weight: 700;
-      text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
     }
 
     #scanner {
       width: 320px;
       max-width: 90%;
-      border-radius: 16px;
+      border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
       background: #111;
     }
 
@@ -44,30 +35,36 @@
       margin-top: 20px;
       font-size: 18px;
       font-weight: 500;
-      padding: 12px 20px;
-      border-radius: 10px;
+      padding: 10px 16px;
+      border-radius: 8px;
       background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(6px);
       text-align: center;
     }
 
-    #result a {
-      color: #ffea00;
-      text-decoration: none;
+    button {
+      margin-top: 15px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
       font-weight: bold;
-    }
-
-    #result a:hover {
-      text-decoration: underline;
+      cursor: pointer;
+      background: #6a5acd;
+      color: #fff;
     }
   </style>
 </head>
 <body>
   <h2>QR Code Scanner</h2>
   <div id="scanner"></div>
+  <button id="switchBtn" onclick="switchCamera()">Use Back Camera</button>
   <p id="result">Scan a QR code...</p>
 
   <script>
+    let html5QrCode = new Html5Qrcode("scanner");
+    let currentCamera = "user";
+    let isRunning = false;
+
     function onScanSuccess(decodedText) {
       const resultElement = document.getElementById("result");
       if (decodedText.startsWith("http://") || decodedText.startsWith("https://")) {
@@ -77,16 +74,25 @@
       }
     }
 
-    const html5QrCode = new Html5Qrcode("scanner");
+    async function startScanner(cameraFacing) {
+      if (isRunning) {
+        await html5QrCode.stop();
+      }
+      await html5QrCode.start(
+        { facingMode: { exact: cameraFacing } },
+        { fps: 10, qrbox: 250 },
+        onScanSuccess
+      );
+      isRunning = true;
+    }
 
-    html5QrCode.start(
-      { facingMode: { exact: "environment" } },
-      { fps: 10, qrbox: 250 },
-      onScanSuccess
-    ).catch(err => {
-      console.error("Error starting QR scanner: ", err);
-    });
+    async function switchCamera() {
+      currentCamera = (currentCamera === "environment") ? "user" : "environment";
+      document.getElementById("switchBtn").innerText = 
+        currentCamera === "environment" ? "Use Front Camera" : "Use Back Camera";
+      startScanner(currentCamera);
+    }
+    startScanner(currentCamera);
   </script>
 </body>
 </html>
-
