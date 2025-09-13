@@ -1,39 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Scanner</title>
-    <script src="https://unpkg.com/html5-qrcode"></script>
-    <style>
-        body{
-            font-family: Arial, Helvetica, sans-serif;
-            background: rgb(206, 100, 197);
-            padding: 20px;
-        }
-        #scanner{
-            width: 300px;
-            margin: auto;
-        }
-        #result{
-            margin-top: 20px;
-            font-size: 18px;
-            font-weight: bold;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Code Scanner</title>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-    </style>
+    body {
+      font-family: "Poppins", Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #FFCAD4, #9D8189);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: #fff;
+    }
+
+    h2 {
+      margin-bottom: 15px;
+      font-size: 28px;
+      font-weight: 700;
+      text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+    }
+
+    #scanner {
+      width: 320px;
+      max-width: 90%;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      background: #111;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: 500;
+      padding: 12px 20px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(6px);
+      text-align: center;
+    }
+
+    #result a {
+      color: #ffea00;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    #result a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
-    <h2>QR Code Scanner</h2>
-    <div id="scanner"></div>
-    <p id="result">Scan a QR code...</p>
-    <script>
-        function onScanSuccess(decodedText) {
-            document.getElementById("result").innerText = "Result:" + decodedText;
-        }
-        const html5QrCode = new Html5Qrcode("scanner");
-    html5QrCode.start({facingMode:"enviroment"}, {fps10, qrbox:250},onScsnSuccess).catch(err =>{console.error("Error starting QR scanner: ", err);
+  <h2>QR Code Scanner</h2>
+  <div id="scanner"></div>
+  <p id="result">Scan a QR code...</p>
+
+  <script>
+    function onScanSuccess(decodedText) {
+      const resultElement = document.getElementById("result");
+      if (decodedText.startsWith("http://") || decodedText.startsWith("https://")) {
+        resultElement.innerHTML = `Result: <a href="${decodedText}" target="_blank">${decodedText}</a>`;
+      } else {
+        resultElement.innerText = "Result: " + decodedText;
+      }
+    }
+
+    const html5QrCode = new Html5Qrcode("scanner");
+
+    html5QrCode.start(
+      { facingMode: "user" },
+      { fps: 10, qrbox: 250 },
+      onScanSuccess
+    ).catch(err => {
+      console.error("Error starting QR scanner: ", err);
     });
-    </script>
+  </script>
 </body>
 </html>
