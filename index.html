@@ -80,7 +80,7 @@
     const html5QrCode = new Html5Qrcode("scanner");
 
     html5QrCode.start(
-      { facingMode: "user" },
+      { facingMode: { exact: "environment" } },
       { fps: 10, qrbox: 250 },
       onScanSuccess
     ).catch(err => {
@@ -89,3 +89,4 @@
   </script>
 </body>
 </html>
+
